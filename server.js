@@ -1,6 +1,3 @@
-app.get("/", (req, res) => {
-  res.send("Fraud Detection API is running");
-});
 const express = require("express");
 const cors = require("cors");
 
@@ -9,7 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Fraud Detection API is running 🚀");
+});
+
 app.post("/analyze-transaction", (req, res) => {
+
   const { amount, location } = req.body;
 
   let risk = 10;
@@ -30,10 +32,11 @@ app.post("/analyze-transaction", (req, res) => {
     status: risk > 60 ? "Fraud Detected" : "Safe",
     reasons
   });
+
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running");
+  console.log("Server running on port " + PORT);
 });
