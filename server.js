@@ -1,40 +1,38 @@
-/**
- * ShieldX – AI Powered Fraud Detection System
- * Entry point / Express server
- */
-
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
-
-const fraudRoutes = require("./routes/fraud");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// ── Middleware ──────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
 
-// ── Routes ──────────────────────────────────────────────────────────────────
-app.use("/api", fraudRoutes);
+app.post("/analyze-transaction", (req, res) => {
 
-// ── Health check ─────────────────────────────────────────────────────────────
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", service: "ShieldX Fraud Detection API", version: "1.0.0" });
+  const { amount, location } = req.body;
+
+  let risk = 10;
+  let reasons = [];
+
+  if (amount > 10000) {
+    risk += 40;
+    reasons.push("High transaction amount");
+  }
+
+  if (location !== "India") {
+    risk += 30;
+    reasons.push("Unusual location");
+  }
+
+  res.json({
+    risk_score: risk,
+    status: risk > 60 ? "Fraud Detected" : "Safe",
+    reasons: reasons
+  });
+
 });
 
-// ── Serve demo frontend ──────────────────────────────────────────────────────
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
+const PORT = process.env.PORT || 3000;
 
-// ── Start ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`\n🛡️  ShieldX API running at http://localhost:${PORT}`);
-  console.log(`   POST /api/analyze-transaction`);
-  console.log(`   GET  /health\n`);
+  console.log(`Server running on port ${PORT}`);
 });
-
-module.exports = app;
