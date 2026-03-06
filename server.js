@@ -7,7 +7,6 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/analyze-transaction", (req, res) => {
-
   const { amount, location } = req.body;
 
   let risk = 10;
@@ -20,19 +19,18 @@ app.post("/analyze-transaction", (req, res) => {
 
   if (location !== "India") {
     risk += 30;
-    reasons.push("Unusual location");
+    reasons.push("Location mismatch");
   }
 
   res.json({
     risk_score: risk,
     status: risk > 60 ? "Fraud Detected" : "Safe",
-    reasons: reasons
+    reasons
   });
-
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running");
 });
