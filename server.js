@@ -1,3 +1,6 @@
+app.get("/", (req, res) => {
+  res.send("Fraud Detection API is running");
+});
 const express = require("express");
 const cors = require("cors");
 
